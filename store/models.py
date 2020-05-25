@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+# Create your models here.
+
 class Customer(models.Model):
 	user = models.OneToOneField(User, null=True, blank=True, on_delete=models.CASCADE)
 	name = models.CharField(max_length=200, null=True)
@@ -8,6 +10,7 @@ class Customer(models.Model):
 
 	def __str__(self):
 		return self.name
+
 
 class Product(models.Model):
 	name = models.CharField(max_length=200)
@@ -34,6 +37,15 @@ class Order(models.Model):
 
 	def __str__(self):
 		return str(self.id)
+		
+	@property
+	def shipping(self):
+		shipping = False
+		orderitems = self.orderitem_set.all()
+		for i in orderitems:
+			if i.product.digital == False:
+				shipping = True
+		return shipping
 
 	@property
 	def get_cart_total(self):
